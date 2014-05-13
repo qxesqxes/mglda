@@ -10,3 +10,7 @@ Thank you.
 
 USAGE:
 $ python mglda.py
+
+from qxesqxes
+
+I will edit some code for the chinese usage 
