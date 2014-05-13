@@ -1,3 +1,12 @@
+Multi-grain LDA
+=========
+
+Edit for the chinese usage 
+
+NOTE:
+--------
+The following is from the original authorwriter:
+
 mglda with gibbs sampling
 MIT lisence (C) Masanao Ochi
 
@@ -11,6 +20,3 @@ Thank you.
 USAGE:
 $ python mglda.py
 
-from qxesqxes
-
-I will edit some code for the chinese usage 
