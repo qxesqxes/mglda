@@ -47,7 +47,7 @@ class MGLDA:
 
         self.inflation = 0
 
-        print "random fitting to initialize"
+        print("random fitting to initialize")
         for m, doc in enumerate(self.docs):
             v_d = []
             r_d = []
@@ -116,7 +116,7 @@ class MGLDA:
             self.n_d_s_v.append(n_d_s_v_d)
             self.n_d_s.append(n_d_s_d)
         
-        print "initialize"
+        print("initialize")
         for m, doc in enumerate(self.docs):
             for s, sent in enumerate(doc):
                 for i, word in enumerate(sent):
@@ -135,13 +135,13 @@ class MGLDA:
                         self.n_d_v_loc[m][s+v]      += 1
                         self.n_d_v_loc_z[m][s+v][z] += 1
                     else:
-                        print "error0: " + str(r)
+                        print("error0: ", str(r))
 
                     self.n_d_s_v[m][s][v]           += 1
                     self.n_d_s[m][s]                += 1
                     self.n_d_v[m][s+v]              += 1
 
-        print "init comp."
+        print("init comp.")
 
     def inference(self):
         """learning once iteration"""
@@ -165,7 +165,7 @@ class MGLDA:
                         self.n_d_v_loc[m][s+v]      -= 1
                         self.n_d_v_loc_z[m][s+v][z] -= 1
                     else:
-                        print "error1: " + str(r)
+                        print("error1: " + str(r))
 
                     self.n_d_s_v[m][s][v]       -= 1
                     self.n_d_s[m][s]            -= 1
@@ -215,7 +215,7 @@ class MGLDA:
                         self.n_d_v_loc[m][s+new_v]          += 1
                         self.n_d_v_loc_z[m][s+new_v][new_z] += 1
                     else:
-                        print "error2: " + str(r)
+                        print("error2: " + str(r))
 
                     self.n_d_s_v[m][s][new_v]               += 1
                     self.n_d_s[m][s]                        += 1
@@ -231,16 +231,16 @@ class MGLDA:
 
 def mglda_learning(mglda, iteration, voca):
     for i in range(iteration):
-        print "\n\n\n==== " + str(i) + "-th inference ===="
+        print("\n\n\n==== ", str(i), "-th inference ====")
         mglda.inference()
-        print "inference complete"
+        print("inference complete")
         output_word_topic_dist(mglda, voca)
 
 def output_word_topic_dist(mglda, voca):
     z_gl_count = numpy.zeros(mglda.K_gl, dtype=int)
     z_loc_count = numpy.zeros(mglda.K_loc, dtype=int)
-    word_gl_count = [dict() for k in xrange(mglda.K_gl)]
-    word_loc_count = [dict() for k in xrange(mglda.K_loc)]
+    word_gl_count = [dict() for k in range(mglda.K_gl)]
+    word_loc_count = [dict() for k in range(mglda.K_loc)]
     
     for m, doc in enumerate(mglda.docs):
         for s, sent in enumerate(doc):
@@ -261,35 +261,35 @@ def output_word_topic_dist(mglda, voca):
                     else:
                         word_loc_count[z][word]  = 1
                 else:
-                    print "error3: " + str(r)
+                    print("error3: " + str(r))
 
     phi_gl, phi_loc = mglda.worddist()
     for k in range(mglda.K_gl):
-        print "\n-- global topic: %d (%d words)" % (k, z_gl_count[k])
-        print "mglda.n_gl_z[k]"
-        print mglda.n_gl_z[k]
+        print("\n-- global topic: %d (%d words)" % (k, z_gl_count[k]))
+        print("mglda.n_gl_z[k]")
+        print(mglda.n_gl_z[k])
         for w in numpy.argsort(-phi_gl[k])[:20]:
-            print "%s: %f (%d)" % (voca[w], phi_gl[k,w], word_gl_count[k].get(w,0))
+            print("%s: %f (%d)" % (voca[w], phi_gl[k,w], word_gl_count[k].get(w,0)))
 
     for k in range(mglda.K_loc):
-        print "\n-- local topic: %d (%d words)" % (k, z_loc_count[k])
-        print mglda.n_loc_z[k]
-        print "mglda.n_loc_z[k]"
+        print("\n-- local topic: %d (%d words)" % (k, z_loc_count[k]))
+        print(mglda.n_loc_z[k])
+        print("mglda.n_loc_z[k]")
         for w in numpy.argsort(-phi_loc[k])[:20]:
-            print "%s: %f (%d)" % (voca[w], phi_loc[k,w], word_loc_count[k].get(w,0))
+            print("%s: %f (%d)" % (voca[w], phi_loc[k,w], word_loc_count[k].get(w,0)))
 
 def test():
-#    import nltk.corpus
-    import vocabulary_for_mglda as vocabulary
-    
-    corpus = vocabulary.load_corpus_each_sentence("0:2000")
+#    import vocabulary_for_mglda as vocabulary
+    import vocabulary_forMGLDA as vocabulary
 
-    #docs[sentence_idx][word_idx]
-    voca = vocabulary.Vocabulary(True)
+    corpus = vocabulary.load_file('trainingCorpus/trainingData.final.txt')
+
+#    voca = vocabulary.Vocabulary(True)
+    voca = vocabulary.Vocabulary()
     docs = [voca.doc_to_ids_each_sentence(doc) for doc in corpus]
-    K_gl, K_loc, gamma, alpha_gl, alpha_loc, alpha_mix_gl, alpha_mix_loc, beta_gl, beta_loc, T, docs, W = 50, 10, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 3, docs, voca.size()
+    K_gl, K_loc, gamma, alpha_gl, alpha_loc, alpha_mix_gl, alpha_mix_loc, beta_gl, beta_loc, T, docs, W = 100, 50, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 3, docs, voca.size()
     mglda = MGLDA(K_gl, K_loc, gamma, alpha_gl, alpha_loc, alpha_mix_gl, alpha_mix_loc, beta_gl, beta_loc, T, docs, W)
-    print "corpus=%d, words=%d, K_gl=%d, K_loc=%d, gamma=%f, alpha_gl=%f, alpha_loc=%f, alpha_mix_gl=%f, alpha_mix_loc=%f, beta_gl=%f, beta_loc=%f" % (len(corpus), len(voca.vocas), K_gl, K_loc, gamma, alpha_gl, alpha_loc, alpha_mix_gl, alpha_mix_loc, beta_gl, beta_loc)
+    print("corpus=%d, words=%d, K_gl=%d, K_loc=%d, gamma=%f, alpha_gl=%f, alpha_loc=%f, alpha_mix_gl=%f, alpha_mix_loc=%f, beta_gl=%f, beta_loc=%f" % (len(corpus), len(voca.vocas), K_gl, K_loc, gamma, alpha_gl, alpha_loc, alpha_mix_gl, alpha_mix_loc, beta_gl, beta_loc))
     
     iteration = 1000
     mglda_learning(mglda, iteration, voca)
