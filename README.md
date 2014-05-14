@@ -8,7 +8,9 @@ No need to install nltk toolkit and using python3 for general usage.
 File
 ------
 regular.py -> format the general training Data
+
 vocabulary\_forMGLDA.py -> the library for the mglda.py
+
 mglda.py -> the main program file
 
 Require
