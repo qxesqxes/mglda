@@ -5,7 +5,7 @@
 # This code is available under the MIT License.
 # (c)2012 Masanao Ochi.
 
-import numpy
+import numpy, argparse
 
 class MGLDA:
     def __init__(self, K_gl, K_loc, gamma, alpha_gl, alpha_loc, alpha_mix_gl, alpha_mix_loc, beta_gl, beta_loc, T, docs, W, smartinit=False):
@@ -278,21 +278,43 @@ def output_word_topic_dist(mglda, voca):
         for w in numpy.argsort(-phi_loc[k])[:20]:
             print("%s: %f (%d)" % (voca[w], phi_loc[k,w], word_loc_count[k].get(w,0)))
 
-def test():
-#    import vocabulary_for_mglda as vocabulary
+def test(inputFile, K_gl, K_loc, iteration, gamma, alpha_gl, alpha_loc, beta_gl, beta_loc):
     import vocabulary_forMGLDA as vocabulary
 
-    corpus = vocabulary.load_file('trainingCorpus/trainingData.final.txt')
-
-#    voca = vocabulary.Vocabulary(True)
+    corpus = vocabulary.load_file(inputFile)
     voca = vocabulary.Vocabulary()
     docs = [voca.doc_to_ids_each_sentence(doc) for doc in corpus]
-    K_gl, K_loc, gamma, alpha_gl, alpha_loc, alpha_mix_gl, alpha_mix_loc, beta_gl, beta_loc, T, docs, W = 100, 50, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 3, docs, voca.size()
+
+    alpha_mix_gl, alpha_mix_loc, T, docs, W = 0.1, 0.1, 3, docs, voca.size()
     mglda = MGLDA(K_gl, K_loc, gamma, alpha_gl, alpha_loc, alpha_mix_gl, alpha_mix_loc, beta_gl, beta_loc, T, docs, W)
     print("corpus=%d, words=%d, K_gl=%d, K_loc=%d, gamma=%f, alpha_gl=%f, alpha_loc=%f, alpha_mix_gl=%f, alpha_mix_loc=%f, beta_gl=%f, beta_loc=%f" % (len(corpus), len(voca.vocas), K_gl, K_loc, gamma, alpha_gl, alpha_loc, alpha_mix_gl, alpha_mix_loc, beta_gl, beta_loc))
     
-    iteration = 1000
     mglda_learning(mglda, iteration, voca)
 
 if __name__ == "__main__":
-    test()
+    #command parser
+    parser = argparse.ArgumentParser( \
+        description="Multi-grain LDA Program.", \
+        epilog="Example: python3 mglda.py trainingCorpus/TrainingData.txt")
+    parser.add_argument("inputFile", help="the inputFile to process")
+    parser.add_argument("-g","--globalTopic", help="the number of the global topics", \
+                          default=60, type=int, required=True)
+    parser.add_argument("-l","--localTopic", help="the number of the local topics", \
+                          default=25, type=int, required=True)
+    parser.add_argument("-i","--iteration", help="the number of the inference iterations", \
+                          default=1000, type=int)
+    parser.add_argument("--gamma", help="gamma is the inference parameters", \
+                          default=0.1, type=float)
+    parser.add_argument("--alpha_gl", help="alpha of global is the inference parameters", \
+                          default=0.1, type=float)
+    parser.add_argument("--alpha_loc", help="alpha of local is the inference parameters", \
+                          default=0.1, type=float)
+    parser.add_argument("--beta_gl", help="beta of global is the inference parameters", \
+                          default=0.1, type=float)
+    parser.add_argument("--beta_loc", help="beta of local is the inference parameters", \
+                          default=0.1, type=float)
+    args = parser.parse_args()
+
+    #algorithm
+    test(args.inputFile, args.globalTopic, args.localTopic, args.iteration, \
+         args.gamma, args.alpha_gl, args.alpha_loc, args.beta_gl, args.beta_loc)

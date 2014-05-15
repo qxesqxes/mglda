@@ -1,6 +1,8 @@
 Multi-grain LDA
 =========
 
+Goal: extracting the ratable aspect words in the reviews(training Data)
+
 This progrom is modified from https://github.com/m-ochi/mglda and concentrate on the usage for chinese.
 
 No need to install nltk toolkit and using python3 for general usage.
@@ -20,6 +22,7 @@ mglda.py -> the main program file
 Require
 --------
 sudo apt-get install pyhton3
+
 sudo apt-get install pyhton3-numpy
 
 Usage
