@@ -1,26 +1,8 @@
 import re, argparse, unicodedata, string
 
-#command parser
-parser = argparse.ArgumentParser( \
-    description="format the trainingData for the input of the mglda.py program.", \
-    epilog="Example: python3 regular.py smallTrainingData.txt smallTrainingData.final.txt")
-parser.add_argument("inputFile", help="the inputFile to process")
-parser.add_argument("outputFile", help="the outputFile to construct")
-group = parser.add_mutually_exclusive_group()
-group.add_argument("-q","--quiet",help="show nothing",action="store_true")
-group.add_argument("-d","--detail", help="show the detail setting messages", action="store_true")
-args = parser.parse_args()
-
-#algorithm
-if __name__ == '__main__':
-    outputFile = open(args.outputFile, 'w')
-    if args.detail:
-        print('Processing inputFile: {} and contruct outputFile: {}'.format(args.inputFile, args.outputFile))
-    elif args.quiet:
-        print()
-    else:
-        print('Running {} '.format(__file__))
-    for line in open(args.inputFile, 'r'):
+def filter(inputName, outputName):
+    outputFile = open(outputName, 'w')
+    for line in open(inputName, 'r'):
         line = line.rstrip('\n')
         result = unicodedata.normalize('NFKC',line)  #fullwidth to half-width 
         #note: need to filter english and its POS
@@ -48,4 +30,25 @@ if __name__ == '__main__':
             outputFile.write(' \n')
     outputFile.close()
 
+if __name__ == '__main__':
+    #command parser
+    parser = argparse.ArgumentParser( \
+        description="format the trainingData for the input of the mglda.py program.", \
+        epilog="Example: python3 regular.py smallTrainingData.txt smallTrainingData.final.txt")
+    parser.add_argument("inputFile", help="the inputFile to process")
+    parser.add_argument("outputFile", help="the outputFile to construct")
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("-q","--quiet",help="show nothing",action="store_true")
+    group.add_argument("-d","--detail", help="show the detail setting messages", action="store_true")
+    args = parser.parse_args()
+    #program message
+    if args.detail:
+        print('Processing inputFile: {} and contruct outputFile: {}'.format(args.inputFile, args.outputFile))
+    elif args.quiet:
+        print()
+    else:
+        print('Running {} '.format(__file__))
+
+    #algorithm
+    filter(args.inputFile, args.outputFile)
 
