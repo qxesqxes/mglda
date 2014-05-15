@@ -27,4 +27,10 @@ sudo apt-get install pyhton3-numpy
 
 Usage
 -------
-python3 mglda.py
+to get more information
+
+> python3 mglda.py -h 
+
+Example:
+
+> python3 mglda.py trainingCorpus/TrainingData.txt -g 60 -l 25

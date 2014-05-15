@@ -292,10 +292,11 @@ def test(inputFile, K_gl, K_loc, iteration, gamma, alpha_gl, alpha_loc, beta_gl,
     mglda_learning(mglda, iteration, voca)
 
 if __name__ == "__main__":
+    import argparse, regular 
     #command parser
     parser = argparse.ArgumentParser( \
         description="Multi-grain LDA Program.", \
-        epilog="Example: python3 mglda.py trainingCorpus/TrainingData.txt")
+        epilog="Example: python3 mglda.py trainingCorpus/TrainingData.txt -g 60 -l 25")
     parser.add_argument("inputFile", help="the inputFile to process")
     parser.add_argument("-g","--globalTopic", help="the number of the global topics", \
                           default=60, type=int, required=True)
@@ -313,8 +314,20 @@ if __name__ == "__main__":
                           default=0.1, type=float)
     parser.add_argument("--beta_loc", help="beta of local is the inference parameters", \
                           default=0.1, type=float)
+    parser.add_argument("-f","--finishRegular", \
+                       help="add this flag when the input file is formatted by the regular.py", \
+                       action="store_true")
     args = parser.parse_args()
 
     #algorithm
-    test(args.inputFile, args.globalTopic, args.localTopic, args.iteration, \
+    if args.finishRegular:
+        test(args.inputFile, args.globalTopic, args.localTopic, args.iteration, \
          args.gamma, args.alpha_gl, args.alpha_loc, args.beta_gl, args.beta_loc)
+    else: 
+        formattedInput = 'formattedTrainingData.txt'
+        print('Formatting the inputFile: {}'.format(args.inputFile))
+        print('And default output for formatted file: {}'.format(formattedInput))
+        regular.filter(args.inputFile, formattedInput)
+        test(formattedInput, args.globalTopic, args.localTopic, args.iteration, \
+         args.gamma, args.alpha_gl, args.alpha_loc, args.beta_gl, args.beta_loc)
+
