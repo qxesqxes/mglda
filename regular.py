@@ -7,7 +7,7 @@ def filter(inputName, outputName):
         result = unicodedata.normalize('NFKC',line)  #fullwidth to half-width 
         #note: need to filter english and its POS
         result = re.sub(r'\((A|Caa|Cab|Cba|Cbb|D|DE|Da|Dfa|Dfb|Di|Dk)\)','',result)
-        result = re.sub(r'\s\S\((FW)\)','',result)
+        result = re.sub(r'\s+\S+\((FW)\)|\s+\((FW)\)','',result)
         result = re.sub(r'\((|I|Na|Nb|Nc|Ncd|Nd|Nep|Neqa|Neqb|Nes|Neu)\)','',result)
         result = re.sub(r'\((Nf|Ng|Nh|Nv|P|SHI|T|VA|VAC|VB|VC|VCL|VD|VE)\)','',result)
         result = re.sub(r'\((VF|VG|VH|VHC|VI|VJ|VK|VL|V\_2)\)','',result)
