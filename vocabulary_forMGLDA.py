@@ -2,10 +2,7 @@
 # -*- coding: utf-8 -*-
 
 '''
-Created on Sep 11, 2012
-
-mglda用にwindowとかをつくります
-
+updated on May 20, 2014
 '''
 
 import re
